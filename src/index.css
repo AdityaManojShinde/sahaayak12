@@ -39,18 +39,9 @@
 
     --radius: 1rem;
 
-    --chat-user: 175 45% 35%;
-    --chat-user-foreground: 0 0% 100%;
-    --chat-assistant: 0 0% 100%;
-    --chat-assistant-foreground: 200 25% 15%;
-
-    --gradient-primary: linear-gradient(135deg, hsl(175 45% 35%) 0%, hsl(175 55% 25%) 100%);
-    --gradient-accent: linear-gradient(135deg, hsl(28 90% 55%) 0%, hsl(20 85% 50%) 100%);
-    --gradient-hero: linear-gradient(180deg, hsl(45 30% 98%) 0%, hsl(175 30% 95%) 100%);
-
-    --shadow-soft: 0 2px 8px -2px hsl(200 25% 15% / 0.08);
-    --shadow-card: 0 4px 16px -4px hsl(200 25% 15% / 0.1);
-    --shadow-elevated: 0 8px 32px -8px hsl(200 25% 15% / 0.15);
+    --shadow-soft: 0 2px 8px -2px rgba(15, 30, 40, 0.08);
+    --shadow-card: 0 4px 16px -4px rgba(15, 30, 40, 0.1);
+    --shadow-elevated: 0 8px 32px -8px rgba(15, 30, 40, 0.15);
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -94,11 +85,6 @@
     --input: 200 20% 22%;
     --ring: 175 50% 45%;
 
-    --chat-user: 175 50% 45%;
-    --chat-user-foreground: 200 25% 10%;
-    --chat-assistant: 200 25% 15%;
-    --chat-assistant-foreground: 45 20% 95%;
-
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -127,12 +113,12 @@
 
 @layer components {
   .chat-bubble-user {
-    @apply bg-chat-user text-chat-user-foreground rounded-2xl rounded-br-md px-4 py-3;
+    @apply bg-primary text-primary-foreground rounded-2xl rounded-br-md px-4 py-3;
     box-shadow: var(--shadow-soft);
   }
 
   .chat-bubble-assistant {
-    @apply bg-chat-assistant text-chat-assistant-foreground rounded-2xl rounded-bl-md px-4 py-3 border border-border;
+    @apply bg-card text-card-foreground rounded-2xl rounded-bl-md px-4 py-3 border border-border;
     box-shadow: var(--shadow-soft);
   }
 
@@ -145,12 +131,6 @@
     box-shadow: var(--shadow-soft);
   }
 
-  .gradient-text {
-    background: var(--gradient-primary);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
 }
 
 @layer utilities {
