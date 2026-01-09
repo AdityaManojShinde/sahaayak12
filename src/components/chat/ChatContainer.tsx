@@ -146,14 +146,14 @@ export const ChatContainer = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen max-h-screen bg-background">
+    <div className="flex flex-col h-[100dvh] max-h-[100dvh] bg-background">
       <ChatHeader language={language} onLanguageChange={setLanguage} />
       
       <div className="flex-1 overflow-y-auto scrollbar-thin">
         {messages.length === 0 ? (
           <WelcomeMessage language={language} />
         ) : (
-          <div className="flex flex-col gap-4 p-4">
+          <div className="flex flex-col gap-3 p-3 sm:gap-4 sm:p-4 md:p-6 max-w-4xl mx-auto w-full">
             {messages.map((message) => (
               <ChatMessage key={message.id} message={message} onActionClick={handleActionClick} />
             ))}
