@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { ChatHeader } from "./ChatHeader";
-import { ChatMessage, Message } from "./ChatMessage";
+import { ChatMessage, Message, ActionButton } from "./ChatMessage";
 import { ChatInput } from "./ChatInput";
 import { QuickActions } from "./QuickActions";
 import { TypingIndicator } from "./TypingIndicator";
@@ -14,19 +14,80 @@ const placeholders = {
   mr: "शिष्यवृत्ती, पात्रता, कागदपत्रांबद्दल विचारा...",
 };
 
-const mockResponses = {
+interface MockResponse {
+  content: string;
+  actions?: ActionButton[];
+}
+
+const mockResponses: Record<Language, MockResponse[]> = {
   en: [
-    "I can help you find scholarships! To give you the best recommendations, could you tell me:\n\n• Your current education level (10th/12th/Graduate)\n• Your category (General/SC/ST/OBC/EWS)\n• Your family's annual income\n\nThis will help me find scholarships you're eligible for.",
-    "Great question! For most Maharashtra government scholarships, you'll need:\n\n📄 Aadhaar Card\n📄 Income Certificate\n📄 Caste Certificate (if applicable)\n📄 Previous year marksheet\n📄 Bank passbook\n📄 Domicile Certificate\n\nWould you like me to explain how to get any of these documents?",
-    "The Mahatma Jyotiba Phule Scholarship is one of the most popular schemes! Here's what you need to know:\n\n✅ For SC/ST/OBC students\n✅ Family income below ₹8 lakh/year\n✅ Covers tuition fees + maintenance\n\nWould you like me to guide you through the application process?",
+    {
+      content: "I can help you find scholarships! To give you the best recommendations, could you tell me your education level?",
+      actions: [
+        { id: "1", label: "10th Standard", value: "I am in 10th standard" },
+        { id: "2", label: "12th Standard", value: "I am in 12th standard" },
+        { id: "3", label: "Undergraduate", value: "I am an undergraduate student" },
+        { id: "4", label: "Postgraduate", value: "I am a postgraduate student" },
+      ],
+    },
+    {
+      content: "Great! Now let me know your category to find the best scholarships for you.",
+      actions: [
+        { id: "1", label: "General", value: "My category is General" },
+        { id: "2", label: "SC/ST", value: "My category is SC/ST" },
+        { id: "3", label: "OBC", value: "My category is OBC" },
+        { id: "4", label: "EWS", value: "My category is EWS" },
+      ],
+    },
+    {
+      content: "The Mahatma Jyotiba Phule Scholarship is one of the most popular schemes!\n\n✅ For SC/ST/OBC students\n✅ Family income below ₹8 lakh/year\n✅ Covers tuition fees + maintenance\n\nWould you like to proceed?",
+      actions: [
+        { id: "1", label: "✅ Yes, apply now", value: "Yes, I want to apply for this scholarship" },
+        { id: "2", label: "📋 Check eligibility", value: "What are the eligibility requirements?" },
+        { id: "3", label: "📄 Documents needed", value: "What documents do I need?" },
+        { id: "4", label: "🔍 Show other options", value: "Show me other scholarship options" },
+      ],
+    },
   ],
   hi: [
-    "मैं आपको छात्रवृत्ति खोजने में मदद कर सकता हूं! सर्वोत्तम सिफारिशें देने के लिए, क्या आप मुझे बता सकते हैं:\n\n• आपका वर्तमान शिक्षा स्तर (10वीं/12वीं/स्नातक)\n• आपकी श्रेणी (सामान्य/SC/ST/OBC/EWS)\n• आपके परिवार की वार्षिक आय\n\nइससे मुझे उन छात्रवृत्तियों को खोजने में मदद मिलेगी जिनके लिए आप पात्र हैं।",
-    "बढ़िया सवाल! अधिकांश महाराष्ट्र सरकारी छात्रवृत्तियों के लिए, आपको चाहिए:\n\n📄 आधार कार्ड\n📄 आय प्रमाण पत्र\n📄 जाति प्रमाण पत्र (यदि लागू हो)\n📄 पिछले वर्ष की मार्कशीट\n📄 बैंक पासबुक\n📄 अधिवास प्रमाण पत्र\n\nक्या आप चाहते हैं कि मैं इनमें से कोई दस्तावेज कैसे प्राप्त करें, यह समझाऊं?",
+    {
+      content: "मैं आपको छात्रवृत्ति खोजने में मदद कर सकता हूं! कृपया अपना शिक्षा स्तर बताएं।",
+      actions: [
+        { id: "1", label: "10वीं कक्षा", value: "मैं 10वीं कक्षा में हूं" },
+        { id: "2", label: "12वीं कक्षा", value: "मैं 12वीं कक्षा में हूं" },
+        { id: "3", label: "स्नातक", value: "मैं स्नातक छात्र हूं" },
+        { id: "4", label: "स्नातकोत्तर", value: "मैं स्नातकोत्तर छात्र हूं" },
+      ],
+    },
+    {
+      content: "बढ़िया! अब मुझे अपनी श्रेणी बताएं ताकि मैं आपके लिए सर्वोत्तम छात्रवृत्ति खोज सकूं।",
+      actions: [
+        { id: "1", label: "सामान्य", value: "मेरी श्रेणी सामान्य है" },
+        { id: "2", label: "SC/ST", value: "मेरी श्रेणी SC/ST है" },
+        { id: "3", label: "OBC", value: "मेरी श्रेणी OBC है" },
+        { id: "4", label: "EWS", value: "मेरी श्रेणी EWS है" },
+      ],
+    },
   ],
   mr: [
-    "मी तुम्हाला शिष्यवृत्ती शोधण्यात मदत करू शकतो! सर्वोत्तम शिफारसी देण्यासाठी, तुम्ही मला सांगू शकता का:\n\n• तुमची सध्याची शिक्षण पातळी (10वी/12वी/पदवी)\n• तुमची श्रेणी (सामान्य/SC/ST/OBC/EWS)\n• तुमच्या कुटुंबाचे वार्षिक उत्पन्न\n\nयामुळे मला तुम्ही पात्र असलेल्या शिष्यवृत्ती शोधण्यात मदत होईल.",
-    "उत्तम प्रश्न! बहुतेक महाराष्ट्र सरकारी शिष्यवृत्तीसाठी, तुम्हाला हे लागेल:\n\n📄 आधार कार्ड\n📄 उत्पन्न प्रमाणपत्र\n📄 जात प्रमाणपत्र (लागू असल्यास)\n📄 मागील वर्षाची मार्कशीट\n📄 बँक पासबुक\n📄 अधिवास प्रमाणपत्र\n\nयापैकी कोणतेही कागदपत्र कसे मिळवायचे हे मी समजावून सांगू का?",
+    {
+      content: "मी तुम्हाला शिष्यवृत्ती शोधण्यात मदत करू शकतो! कृपया तुमची शिक्षण पातळी सांगा।",
+      actions: [
+        { id: "1", label: "10वी", value: "मी 10वी मध्ये आहे" },
+        { id: "2", label: "12वी", value: "मी 12वी मध्ये आहे" },
+        { id: "3", label: "पदवी", value: "मी पदवी विद्यार्थी आहे" },
+        { id: "4", label: "पदव्युत्तर", value: "मी पदव्युत्तर विद्यार्थी आहे" },
+      ],
+    },
+    {
+      content: "छान! आता तुमची श्रेणी सांगा जेणेकरून मी तुमच्यासाठी सर्वोत्तम शिष्यवृत्ती शोधू शकेन.",
+      actions: [
+        { id: "1", label: "सामान्य", value: "माझी श्रेणी सामान्य आहे" },
+        { id: "2", label: "SC/ST", value: "माझी श्रेणी SC/ST आहे" },
+        { id: "3", label: "OBC", value: "माझी श्रेणी OBC आहे" },
+        { id: "4", label: "EWS", value: "माझी श्रेणी EWS आहे" },
+      ],
+    },
   ],
 };
 
@@ -56,8 +117,9 @@ export const ChatContainer = () => {
         {
           id: Date.now().toString(),
           role: "assistant",
-          content: randomResponse,
+          content: randomResponse.content,
           timestamp: new Date(),
+          actions: randomResponse.actions,
         },
       ]);
       setIsTyping(false);
@@ -79,6 +141,10 @@ export const ChatContainer = () => {
     handleSend(action);
   };
 
+  const handleActionClick = (action: ActionButton) => {
+    handleSend(action.value);
+  };
+
   return (
     <div className="flex flex-col h-screen max-h-screen bg-background">
       <ChatHeader language={language} onLanguageChange={setLanguage} />
@@ -89,7 +155,7 @@ export const ChatContainer = () => {
         ) : (
           <div className="flex flex-col gap-4 p-4">
             {messages.map((message) => (
-              <ChatMessage key={message.id} message={message} />
+              <ChatMessage key={message.id} message={message} onActionClick={handleActionClick} />
             ))}
             {isTyping && <TypingIndicator />}
             <div ref={messagesEndRef} />
