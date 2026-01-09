@@ -29,7 +29,7 @@ const actions = {
 
 export const QuickActions = ({ onSelect, language }: QuickActionsProps) => {
   return (
-    <div className="flex flex-wrap gap-2 px-4 py-3">
+    <div className="flex flex-wrap justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-3">
       {actions[language].map((action) => (
         <button
           key={action}

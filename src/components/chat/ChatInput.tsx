@@ -97,36 +97,88 @@ export const ChatInput = ({
     }
   };
   const hasContent = input.trim().length > 0;
-  return <div className="p-4 border-t border-border bg-background border-none">
+  return (
+    <div className="p-2 sm:p-4 bg-background safe-area-bottom">
       <div className="max-w-3xl mx-auto">
-        <div className={cn("relative flex items-end gap-2 rounded-2xl border bg-card p-2 transition-all duration-200", isRecording ? "border-destructive/50 bg-destructive/5" : "border-border focus-within:border-primary/50 focus-within:shadow-sm")}>
-          {isRecording ?
-        // Recording state
-        <div className="flex-1 flex items-center gap-3 px-3 py-2">
-              <div className="w-3 h-3 rounded-full bg-destructive animate-pulse" />
-              <span className="text-sm font-medium text-destructive">
+        <div className={cn(
+          "relative flex items-end gap-1.5 sm:gap-2 rounded-xl sm:rounded-2xl border bg-card p-1.5 sm:p-2 transition-all duration-200",
+          isRecording ? "border-destructive/50 bg-destructive/5" : "border-border focus-within:border-primary/50 focus-within:shadow-sm"
+        )}>
+          {isRecording ? (
+            // Recording state
+            <div className="flex-1 flex items-center gap-2 sm:gap-3 px-2 sm:px-3 py-2">
+              <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-destructive animate-pulse" />
+              <span className="text-xs sm:text-sm font-medium text-destructive">
                 Recording... {formatTime(recordingTime)}
               </span>
-            </div> :
-        // Text input
-        <textarea ref={textareaRef} value={input} onChange={e => setInput(e.target.value)} onKeyDown={handleKeyDown} placeholder={placeholder || "Message Sahaayak..."} disabled={disabled} rows={1} className={cn("flex-1 resize-none bg-transparent px-3 py-2.5 text-sm", "placeholder:text-muted-foreground focus:outline-none", "min-h-[44px] max-h-[150px]", "scrollbar-thin")} />}
+            </div>
+          ) : (
+            // Text input
+            <textarea
+              ref={textareaRef}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder={placeholder || "Message Sahaayak..."}
+              disabled={disabled}
+              rows={1}
+              className={cn(
+                "flex-1 resize-none bg-transparent px-2 sm:px-3 py-2 sm:py-2.5 text-[13px] sm:text-sm",
+                "placeholder:text-muted-foreground focus:outline-none",
+                "min-h-[40px] sm:min-h-[44px] max-h-[120px] sm:max-h-[150px]",
+                "scrollbar-thin"
+              )}
+            />
+          )}
 
-          <div className="flex items-center gap-1.5 shrink-0">
+          <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
             {/* Voice button */}
-            {!hasContent && <Button type="button" size="icon" variant={isRecording ? "destructive" : "ghost"} onClick={isRecording ? stopRecording : startRecording} disabled={disabled} className={cn("h-10 w-10 rounded-xl transition-all duration-200", isRecording && "animate-pulse")}>
-                {isRecording ? <Square className="w-4 h-4 fill-current" /> : <Mic className="w-5 h-5" />}
-              </Button>}
+            {!hasContent && (
+              <Button
+                type="button"
+                size="icon"
+                variant={isRecording ? "destructive" : "ghost"}
+                onClick={isRecording ? stopRecording : startRecording}
+                disabled={disabled}
+                className={cn(
+                  "h-8 w-8 sm:h-10 sm:w-10 rounded-lg sm:rounded-xl transition-all duration-200",
+                  isRecording && "animate-pulse"
+                )}
+              >
+                {isRecording ? (
+                  <Square className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-current" />
+                ) : (
+                  <Mic className="w-4 h-4 sm:w-5 sm:h-5" />
+                )}
+              </Button>
+            )}
 
             {/* Send button */}
-            <Button type="button" size="icon" onClick={() => handleSubmit()} disabled={!hasContent || disabled} className={cn("h-10 w-10 rounded-xl transition-all duration-200", hasContent ? "bg-primary text-primary-foreground hover:bg-primary/90" : "bg-muted text-muted-foreground")}>
-              {disabled ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
+            <Button
+              type="button"
+              size="icon"
+              onClick={() => handleSubmit()}
+              disabled={!hasContent || disabled}
+              className={cn(
+                "h-8 w-8 sm:h-10 sm:w-10 rounded-lg sm:rounded-xl transition-all duration-200",
+                hasContent
+                  ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                  : "bg-muted text-muted-foreground"
+              )}
+            >
+              {disabled ? (
+                <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
+              ) : (
+                <Send className="w-4 h-4 sm:w-5 sm:h-5" />
+              )}
             </Button>
           </div>
         </div>
 
-        <p className="text-[10px] text-center text-muted-foreground mt-2">
+        <p className="text-[9px] sm:text-[10px] text-center text-muted-foreground mt-1.5 sm:mt-2 px-2">
           Sahaayak helps Maharashtra students find scholarships. Always verify information with official sources.
         </p>
       </div>
-    </div>;
+    </div>
+  );
 };
