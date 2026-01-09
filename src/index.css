@@ -131,6 +131,17 @@
     box-shadow: var(--shadow-soft);
   }
 
+  .action-button {
+    @apply px-4 py-2.5 text-sm font-medium rounded-xl
+           bg-card text-foreground border border-border
+           hover:bg-primary hover:text-primary-foreground hover:border-primary
+           active:scale-[0.98] transition-all duration-200 cursor-pointer;
+    box-shadow: var(--shadow-soft);
+  }
+
+  .action-button:hover {
+    box-shadow: var(--shadow-card);
+  }
 }
 
 @layer utilities {
